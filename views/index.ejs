@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/js/script.js" defer></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/hero.css">
+    <link rel="stylesheet" href="/css/newBlog.css">
+    <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+    <!--Navbar-->
+    <nav>
+        <div class="container">
+            <div class="nav-con">
+                <div class="logo">
+                    <a href="">Navbar</a>
+                </div>
+                <ul class="menu">
+                    <li><a href="">menu#1</a></li>
+                    <li><a href="">menu#1</a></li>
+                    <li><a href="">menu#1</a></li>
+                    <li><a href="">menu#1</a></li>
+                    <li><input type="text" class="nav-search-box" /><a href="">🔍</a></li>
+                    <li>
+                        <% if(!user) { %>
+                            <div class="auth-box">
+                            <li><a href="/login">Login</a></li>
+                            <li><a href="/register">Register</a></li>
+                            </div>
+                        <% } %>
+                        
+                    </li>
+                </ul> 
+            </div>
+        </div>
+    </nav>
+    <section class="hero">
+
+        <!-- Section1 Blog-->
+        <div class="box">
+
+            <!--Form Input section-->
+            <div class="form-container hidden" id="upload-form">
+                <h2>สร้างบล็อกใหม่</h2>
+            
+                <!-- รูปภาพ -->
+                <div class="form-group">
+                  <label>รูปภาพหน้าปก</label>
+                  <input type="file" accept="image/*">
+                </div>
+            
+                <!-- หัวข้อ -->
+                <div class="form-group">
+                  <label>หัวข้อบล็อก</label>
+                  <input type="text" placeholder="กรอกชื่อหัวข้อ">
+                </div>
+            
+                <!-- ประเภท -->
+                <div class="form-group">
+                  <label>ประเภทเนื้อหา</label>
+                  <select>
+                    <option>เทคโนโลยี</option>
+                    <option>ท่องเที่ยว</option>
+                    <option>ไลฟ์สไตล์</option>
+                    <option>การเงิน</option>
+                    <option>อื่น ๆ</option>
+                  </select>
+                </div>
+            
+                <!-- แท็ก -->
+                <div class="form-group">
+                  <label>แท็ก (คั่นด้วย , )</label>
+                  <input type="text" placeholder="เช่น backend, nodejs, tutorial">
+                </div>
+            
+                <!-- เนื้อหา -->
+                <div class="form-group">
+                  <label>เนื้อหาบล็อก</label>
+                  <textarea rows="10" placeholder="เริ่มเขียนบทความ..."></textarea>
+                </div>
+            
+                <!-- ปุ่ม -->
+                <div class="form-buttons">
+                  <button class="draft-btn">บันทึกแบบร่าง</button>
+                  <button class="publish-btn">เผยแพร่</button>
+                </div>
+              </div>
+            
+
+            <!--Display blog section1-->
+            <div id="gallery">
+    
+            </div>
+            <div id="image-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center;">
+                <img id="modal-img" src="" style="max-width:90%; max-height:90%;">
+            </div>
+            <div id="create-modal" class="create-sticky-note">
+                Create Blog
+            </div>
+        </div>
+    </section>
+    <!--Section2-->
+    <section class="content">
+        <div class="box">
+            <p>นี่คือเนื้อหาด้านล่างที่คุณต้องเลื่อนลงมาถึงจะเห็น</p>
+            <p>สามารถเพิ่มเนื้อหาอื่น ๆ ต่อได้ที่นี่...</p>
+        </div>
+    </section>
+</body>
+</html>

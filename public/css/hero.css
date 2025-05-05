@@ -1,0 +1,122 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.hero {
+    height: 100vh; /* เต็มจอ */
+    background: url('your-image.jpg') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3rem;
+  }
+.create-sticky-note {
+    position: fixed;
+    top: 150px;
+    right: 20px;
+    color: white;        
+    background: #0c0c0c;
+    padding: 10px 20px;
+    z-index: 9999;
+    font-size: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  }
+  .hidden {
+    display: none;
+  }
+
+  #create-modal {
+    position: fixed;
+    top: 10%;
+    right: 20px;
+    background: #0c0c0c;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+  
+
+  .form-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    max-height: 500px;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 16px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    overflow-y: auto;         /* ทำให้มีการเลื่อนในแนวตั้ง */
+  }
+  
+  h2 {
+    margin-bottom: 20px;
+    font-size: 10px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+  }
+  
+  input[type="text"],
+  select,
+  textarea,
+  input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+  
+  textarea {
+    resize: vertical;
+  }
+  
+  .form-buttons {
+    text-align: right;
+  }
+  
+  button {
+    padding: 10px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  
+  .draft-btn {
+    background-color: #ccc;
+    color: black;
+  }
+  
+  .draft-btn:hover {
+    background-color: #bbb;
+  }
+  
+  .publish-btn {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .publish-btn:hover {
+    background-color: #0056b3;
+  }
