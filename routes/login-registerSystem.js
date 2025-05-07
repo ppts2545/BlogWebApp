@@ -6,6 +6,7 @@ const router = express.Router();
 const db = require('../config/db');
 const path = require('path');
 
+
 //Set Middleware
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
@@ -17,8 +18,17 @@ function blockIfLoggedIn (req, res, next) {
     next()
 }
 
+function isLoggedIn (req, res, next) {
+    if (req.session && req.session.user) {
+        next();
+    } else {
+        res.redirect('/login?=You must log in to create a post');
+    }
+}
+
 router.get('/login', blockIfLoggedIn, (req, res) => {
-    res.render('login');
+    const message = req.query.message;
+    res.render('login', { message });
 })
 
 router.get('/register', blockIfLoggedIn, (req, res) => {
@@ -60,12 +70,16 @@ router.post('/login', (req, res) => {
                 req.session.user = user;
                 res.redirect('/')
            } else {
-            res.redirect('/login', { error_msg: 'Incorrect password!'});
+            res.render('login', { error_msg: 'Incorrect password!'});
            }
         } else {
-            res.render('/login', { error_msg: 'User not found!'})
+            res.render('login', { error_msg: 'User not found!'})
         }
     })
 })
 
-module.exports = router;
+module.exports = {
+    router,
+    blockIfLoggedIn,
+    isLoggedIn
+}; 

@@ -1,60 +1,82 @@
-fetch('/image-list')
-    .then(res => res.json())
-    .then(imageList=> {
-        const galleryDiv = document.getElementById('gallery');
-        const modal = document.getElementById('image-modal');
-        const modalImg = document.getElementById('modal-img');
+document.addEventListener("DOMContentLoaded", async function () {
+    const isLoggedIn = document.body.dataset.loggedin === "true";
 
-        for(let i = 0; i < imageList.length; i++){
+    const createModal = document.getElementById("create-modal");
+    const uploadForm = document.getElementById("upload-form");
+    const galleryDiv = document.getElementById('gallery');
+    const modal = document.getElementById('image-modal');
+    const modalImg = document.getElementById('modal-img');
+
+    try {
+        const res = await fetch('/load-post');
+        const posts = await res.json();
+
+        for (let i = 0; i < posts.length; i++) {
             const blog = document.createElement('div');
             blog.className = 'blog';
             blog.id = `blog-${i}`;
 
             const img = document.createElement('img');
-            img.src = `${imageList[i].filepath}`;
+            img.src = posts[i].images;
             img.style.width = '200px';
             img.style.margin = '10px';
 
+            const topicHeader = document.createElement('h6');
+            topicHeader.textContent = posts[i].title || '';
+            topicHeader.style.fontSize = '20px';
+
+            const shortExplain = document.createElement('p');
+            shortExplain.textContent = posts[i].short_explain || '';
+            shortExplain.style.fontSize = '15px';
+
             img.addEventListener('click', () => {
                 modal.style.display = 'flex';
-                modalImg.src = imageList[i].filepath;
-            })
+                modalImg.src = posts[i].images;
+            });
 
             blog.appendChild(img);
+            blog.appendChild(topicHeader);
+            blog.appendChild(shortExplain);
             galleryDiv.appendChild(blog);
         }
 
-        //ใส่Event สําหรับปิด Modal เมื่อคลิก
         modal.addEventListener('click', () => {
             modal.style.display = 'none';
         });
-    })
-    .catch(err => console.error('Error loading images:', err));
+    } catch (err) {
+        console.error('Error loading posts:', err);
+    }
 
+    // เหมือนเดิมด้านล่างนี้ เป็น synchronous แต่อยู่ใน async function แล้ว
+    if (!createModal) return;
 
-    const createModal = document.getElementById("create-modal");
-    const uploadForm = document.getElementById("upload-form");
-    
-    // เปิด modal
-    createModal.addEventListener('click', (e) => {
-        e.stopPropagation(); // ป้องกันการส่งต่อ event ไปที่ document
-        uploadForm.classList.remove('hidden');
-        document.body.classList.add("backdrop-active");
-    });
-    
-    // ปิด modal เมื่อคลิกนอก modal หรือปุ่ม
-    document.addEventListener('click', (e) => {
-        const clickedInsideForm = uploadForm.contains(e.target);
-        const clickedCreateBtn = createModal.contains(e.target);
-        const modalOpen = !uploadForm.classList.contains('hidden');
-    
-        if (!clickedInsideForm && !clickedCreateBtn && modalOpen) {
-            uploadForm.classList.add('hidden');
-            document.body.classList.remove("backdrop-active");
+    createModal.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!isLoggedIn) {
+            alert("กรุณา Login ก่อน");
+            return;
+        }
+
+        if (uploadForm) {
+            uploadForm.classList.remove("hidden");
+            document.body.classList.add("backdrop-active");
         }
     });
-    
-    // ป้องกันคลิกภายใน modal ไม่ให้ส่งไป document
-    uploadForm.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
+
+    if (uploadForm) {
+        uploadForm.addEventListener("click", (e) => {
+            e.stopPropagation();
+        });
+
+        document.addEventListener("click", (e) => {
+            const clickedInsideForm = uploadForm.contains(e.target);
+            const clickedCreateBtn = createModal.contains(e.target);
+            const modalOpen = !uploadForm.classList.contains("hidden");
+
+            if (!clickedInsideForm && !clickedCreateBtn && modalOpen) {
+                uploadForm.classList.add("hidden");
+                document.body.classList.remove("backdrop-active");
+            }
+        });
+    }
+});

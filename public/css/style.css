@@ -2,9 +2,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  color: black;
+  color:#111827;
 }
 body {
+  background-color: #F9FAFB;
   position: relative;  /* เพื่อให้ pseudo-element ทำงานถูกต้อง */
   min-height: 100vh;   /* ให้ body สูงเต็มหน้าจอ */   /* ป้องกัน scroll ซ้อน (เฉพาะ modal แบบเต็มจอ) */
   font-family: sans-serif; /* เลือกฟอนต์ให้ดู modern */

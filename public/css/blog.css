@@ -1,7 +1,10 @@
 
 .content {
+    background-color: #F9FAFB;
     padding: 100px;
-    background-color: #f4f4f4;
     font-size: 1.5rem;
 }
-  
+
+#gallery {
+    height: 500px;
+}

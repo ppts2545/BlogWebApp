@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
     <script src="/js/script.js" defer></script>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/navbar.css">
@@ -11,7 +12,7 @@
     <link rel="stylesheet" href="/css/newBlog.css">
     <link rel="stylesheet" href="/css/blog.css">
 </head>
-<body>
+<body data-loggedin="<%= user ? 'true' : 'false' %>">
     <!--Navbar-->
     <nav>
         <div class="container">
@@ -26,70 +27,57 @@
                     <li><a href="">menu#1</a></li>
                     <li><input type="text" class="nav-search-box" /><a href="">🔍</a></li>
                     <li>
-                        <% if(!user) { %>
+                        <% if (!user) { %>
                             <div class="auth-box">
-                            <li><a href="/login">Login</a></li>
-                            <li><a href="/register">Register</a></li>
+                                <li><a href="/login">Login</a></li>
+                                <li><a href="/register">Register</a></li>
                             </div>
-                        <% } %>
-                        
+                        <% } %>  
                     </li>
                 </ul> 
             </div>
         </div>
     </nav>
     <section class="hero">
-
+        
         <!-- Section1 Blog-->
         <div class="box">
-
-            <!--Form Input section-->
-            <div class="form-container hidden" id="upload-form">
-                <h2>สร้างบล็อกใหม่</h2>
+            <% if (user) { %>
             
-                <!-- รูปภาพ -->
-                <div class="form-group">
-                  <label>รูปภาพหน้าปก</label>
-                  <input type="file" accept="image/*">
-                </div>
-            
-                <!-- หัวข้อ -->
-                <div class="form-group">
-                  <label>หัวข้อบล็อก</label>
-                  <input type="text" placeholder="กรอกชื่อหัวข้อ">
-                </div>
-            
-                <!-- ประเภท -->
-                <div class="form-group">
-                  <label>ประเภทเนื้อหา</label>
-                  <select>
-                    <option>เทคโนโลยี</option>
-                    <option>ท่องเที่ยว</option>
-                    <option>ไลฟ์สไตล์</option>
-                    <option>การเงิน</option>
-                    <option>อื่น ๆ</option>
-                  </select>
-                </div>
-            
-                <!-- แท็ก -->
-                <div class="form-group">
-                  <label>แท็ก (คั่นด้วย , )</label>
-                  <input type="text" placeholder="เช่น backend, nodejs, tutorial">
-                </div>
-            
-                <!-- เนื้อหา -->
-                <div class="form-group">
-                  <label>เนื้อหาบล็อก</label>
-                  <textarea rows="10" placeholder="เริ่มเขียนบทความ..."></textarea>
-                </div>
-            
-                <!-- ปุ่ม -->
-                <div class="form-buttons">
-                  <button class="draft-btn">บันทึกแบบร่าง</button>
-                  <button class="publish-btn">เผยแพร่</button>
-                </div>
-              </div>
-            
+                <!--Form Input section-->
+                <form id="upload-form"  action="/post-blog" method="post" class="form-container hidden" enctype="multipart/form-data" >
+                    <h2>สร้างบล็อกใหม่</h2>
+                
+                    <!-- รูปภาพ -->
+                    <div class="form-group">
+                        <label>รูปภาพหน้าปก</label>
+                        <input name="imageProfileBlog" type="file" accept="image/*">
+                    </div>
+                
+                    <!-- หัวข้อ -->
+                    <div class="form-group">
+                        <label>หัวข้อบล็อก</label>
+                        <input name="title" type="text" placeholder="กรอกชื่อหัวข้อ">
+                    </div>
+                
+                    <!-- แท็ก -->
+                    <div class="form-group">
+                        <label>แท็ก (คั่นด้วย , )</label>
+                        <input name="tag" type="text" placeholder="เช่น backend, nodejs, tutorial">
+                    </div>
+                
+                    <!-- เนื้อหา -->
+                    <div class="form-group">
+                        <label>อธิบายคล่าวคล่าว</label>
+                        <textarea name="short_explain" rows="10" placeholder="อธิบายบทความ..."></textarea>
+                    </div>
+                
+                    <!-- ปุ่ม -->
+                    <div class="form-buttons">
+                        <button type="submit" class="next-btn">ถัดไป</button>
+                    </div>
+                </form>
+            <% } %>
 
             <!--Display blog section1-->
             <div id="gallery">
