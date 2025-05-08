@@ -4,7 +4,7 @@ const router = express.Router();
 const db = require('../config/db');
 const path = require('path');
 const multer = require('multer');
-const { isLoggedIn } = require('../routes/login-registerSystem.js')
+
 
 // setup diskStorage
 const storage = multer.diskStorage({
@@ -19,23 +19,16 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post(
-    '/post-blog',
-        isLoggedIn,
-        upload.single('imageProfileBlog'),
+    '/create-Bigblog',
+        upload.single('imageBigBlog'),
         (req, res) => {
-        const { title, tag, short_explain } = req.body;
-        const file = req.file;
-        const userId = req.session.user?.id; // Get author ID from session
-    
-        if (!file || !title || !tag || !short_explain || !userId) {
-            return res.status(400).json({ message: 'Missing data' });
-        }
+        const { mainContent } = req.body;
 
         const filename = file.filename;
         const filepath = 'images/' + filename;
 
         const saveImage = 'INSERT INTO images (filename, filepath) VALUES (?, ?)';
-        const saveBlog = 'INSERT INTO blog (title, images, short_explain, tags, author_id) VALUES (?, ?, ?, ?, ?)';
+        const saveBigBlog = 'INSERT INTO blog (content) VALUES (?)';
 
         db.query(saveImage, [filename, filepath], (err) => {
             if (err) {
@@ -43,7 +36,7 @@ router.post(
                 return res.status(500).json({ message: 'Image save failed' });
             }
 
-            db.query(saveBlog, [title, filepath, short_explain, tag, userId], (err) => {
+            db.query(saveBigBlog, [mainContent], (err) => {
                 if (err) {
                     console.error(err);
                     return res.status(500).json({ message: 'Blog save failed' });
@@ -54,14 +47,6 @@ router.post(
         });
 });
 
-router.get('/load-post', (req, res) => {
-    db.query('SELECT * FROM blog', (err, result) => {
-        if(err){
-            console.error('❌ Error load POST data:', err);
-            return res.status(500).json({ error: 'Failed to load Post from database' });
-        }
-        res.json(result);
-    });
-});
+
 
 module.exports = router;

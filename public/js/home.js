@@ -29,6 +29,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             shortExplain.textContent = posts[i].short_explain || '';
             shortExplain.style.fontSize = '15px';
 
+            const blopOpen_btn = document.createElement('button');
+            blopOpen_btn.textContent = 'open Blog';
+            blopOpen_btn.addEventListener('click', function () {
+                window.location.href = '/open-blog'; 
+            });
+              
+
             img.addEventListener('click', () => {
                 modal.style.display = 'flex';
                 modalImg.src = posts[i].images;
@@ -38,6 +45,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             blog.appendChild(topicHeader);
             blog.appendChild(shortExplain);
             galleryDiv.appendChild(blog);
+            blog.appendChild(blopOpen_btn);
         }
 
         modal.addEventListener('click', () => {

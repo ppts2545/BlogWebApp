@@ -6,6 +6,7 @@ const loadImage = require('./routes/upload-image');
 const userRoute = require('./routes/login-registerSystem').router;
 const session = require('express-session');
 const createBlog = require('./routes/create-post');
+const createBigBlog = require('./routes/create-Bigblog');
 
 app.set('view engine', 'ejs');
 app.use(session({
@@ -23,7 +24,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', loadImage);
 app.use('/', userRoute);
 app.use('/', createBlog);
+app.use('/', createBigBlog);
 
+app.get('/open-blog', (req, res) => {
+    res.render("blog")
+})
 
 // Set EJS as template engines
 app.set('view engine', 'ejs');

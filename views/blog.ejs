@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/js/blog.js" defer></script>
+    <link rel="stylesheet" href="/css/bigBlog.css">
+</head>
+<body>
+    <div class="blog-container">
+        <!--Form Input section-->
+        <form id="upload-BigBlogform"  action="/create-Bigblog" method="post" class="form-container hidden" enctype="multipart/form-data" >
+            <h2>เนื้อหาหลัก</h2>
+        
+            <!-- รูปภาพ -->
+            <div class="form-group">
+                <label>รูปภาพในบทความที่ไช้</label>
+                <input name="imageฺBigBlog" type="file" accept="image/*">
+            </div>
+        
+            <!-- เนื้อหา -->
+            <div class="form-group">
+                <label>เขียนบทความ</label>
+                <textarea name="mainContent" rows="10" placeholder="อธิบายบทความ..."></textarea>
+            </div>
+        
+            <!-- ปุ่ม -->
+            <div class="form-buttons">
+                <button type="submit" class="next-btn">ถัดไป</button>
+            </div>
+        </form>
+
+        <img src="" alt="" class="blog-image">
+
+        <h1 class="bolg-title"></h1>
+        <div class="blog-date"></div>
+
+        <div class="blog-content">
+
+        </div>
+    </div>
+</body>
+</html>
