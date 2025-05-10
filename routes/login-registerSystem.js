@@ -22,7 +22,7 @@ function isLoggedIn (req, res, next) {
     if (req.session && req.session.user) {
         next();
     } else {
-        res.redirect('/login?=You must log in to create a post');
+        res.redirect('/login?message=You must log in to create a post');
     }
 }
 

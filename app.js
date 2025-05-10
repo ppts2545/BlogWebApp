@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const port = process.env.PORT || 3000;
-const loadImage = require('./routes/upload-image');
 const userRoute = require('./routes/login-registerSystem').router;
 const session = require('express-session');
 const createBlog = require('./routes/create-post');
@@ -21,17 +20,13 @@ app.use((req, res, next) => {
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/', loadImage);
 app.use('/', userRoute);
 app.use('/', createBlog);
-app.use('/', createBigBlog);
+
 
 app.get('/open-blog', (req, res) => {
     res.render("blog")
 })
-
-// Set EJS as template engines
-app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
     res.render("index", { user: req.session.user });

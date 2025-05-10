@@ -25,28 +25,31 @@ router.post(
         (req, res) => {
         const { title, tag, short_explain } = req.body;
         const file = req.file;
-        const userId = req.session.user?.id; // Get author ID from session
+        
+        const authorId = req.session.user.author_id;
     
-        if (!file || !title || !tag || !short_explain || !userId) {
+        if (!file || !title || !tag || !short_explain || !authorId) {
             return res.status(400).json({ message: 'Missing data' });
         }
 
         const filename = file.filename;
         const filepath = 'images/' + filename;
 
-        const saveImage = 'INSERT INTO images (filename, filepath) VALUES (?, ?)';
-        const saveBlog = 'INSERT INTO blog (title, images, short_explain, tags, author_id) VALUES (?, ?, ?, ?, ?)';
+        const saveBlog = 'INSERT INTO blog (title, short_explain, tags, author_id) VALUES (?, ?, ?, ?)';
+        const saveImage = 'INSERT INTO media (blog_id, filename, filepath, is_thumbnail) VALUES (?, ?, ?, ?)';
 
-        db.query(saveImage, [filename, filepath], (err) => {
+        db.query(saveBlog, [title, short_explain, tag, authorId], (err, blogResult) => {
             if (err) {
                 console.error(err);
-                return res.status(500).json({ message: 'Image save failed' });
+                return res.status(500).json({ message: 'Blog save failed' });
             }
 
-            db.query(saveBlog, [title, filepath, short_explain, tag, userId], (err) => {
+            const blogId = blogResult.insertId;
+            
+            db.query(saveImage, [blogId, filename, filepath, true], (err) => {
                 if (err) {
                     console.error(err);
-                    return res.status(500).json({ message: 'Blog save failed' });
+                    return res.status(500).json({ message: 'Image save failed' });
                 }
 
                 res.status(200).json({ message: 'Blog saved successfully' });
@@ -55,10 +58,22 @@ router.post(
 });
 
 router.get('/load-post', (req, res) => {
-    db.query('SELECT * FROM blog', (err, result) => {
-        if(err){
-            console.error('❌ Error load POST data:', err);
-            return res.status(500).json({ error: 'Failed to load Post from database' });
+    const query = `
+       SELECT 
+        blog.blog_id,
+        blog.title,
+        blog.short_explain,
+        blog.tags,
+        blog.author_id,
+        media.filepath AS thumbnail
+    FROM blog
+    LEFT JOIN media ON blog.blog_id = media.blog_id AND media.is_thumbnail = true
+    `;
+
+    db.query(query, (err, result) => {
+        if (err) {
+            console.error('❌ Error loading blog posts with media:', err);
+            return res.status(500).json({ error: 'Failed to load blog posts' });
         }
         res.json(result);
     });

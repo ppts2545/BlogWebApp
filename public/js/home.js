@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             blog.id = `blog-${i}`;
 
             const img = document.createElement('img');
-            img.src = posts[i].images;
+            img.src = posts[i].thumbnail;
             img.style.width = '200px';
             img.style.margin = '10px';
 
@@ -29,12 +29,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             shortExplain.textContent = posts[i].short_explain || '';
             shortExplain.style.fontSize = '15px';
 
-            const blopOpen_btn = document.createElement('button');
-            blopOpen_btn.textContent = 'open Blog';
-            blopOpen_btn.addEventListener('click', function () {
+            /*
+            const blogOpen_btn = document.createElement('button');
+            blogOpen_btn.textContent = 'open Blog';
+            blogOpen_btn.addEventListener('click', function () {
                 window.location.href = '/open-blog'; 
             });
-              
+            */  
 
             img.addEventListener('click', () => {
                 modal.style.display = 'flex';
@@ -45,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             blog.appendChild(topicHeader);
             blog.appendChild(shortExplain);
             galleryDiv.appendChild(blog);
-            blog.appendChild(blopOpen_btn);
+            //blog.appendChild(blopOpen_btn);
         }
 
         modal.addEventListener('click', () => {
