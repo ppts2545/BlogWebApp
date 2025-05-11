@@ -5,6 +5,8 @@
   color:#111827;
 }
 body {
+  display: flex;
+  flex-direction: column;
   background-color: #F9FAFB;
   position: relative;  /* เพื่อให้ pseudo-element ทำงานถูกต้อง */
   min-height: 100vh;   /* ให้ body สูงเต็มหน้าจอ */   /* ป้องกัน scroll ซ้อน (เฉพาะ modal แบบเต็มจอ) */
@@ -28,4 +30,13 @@ body.backdrop-active::after {
   align-items: center;
 }
 
+/* Section1 will expand naturally */
+section:first-of-type {
+  flex-shrink: 0;
+}
 
+/* Section2 will be pushed to the bottom as content grows */
+section.content {
+  flex-shrink: 0;
+  margin-top: auto;
+}

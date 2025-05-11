@@ -4,7 +4,7 @@ const router = express.Router();
 const db = require('../config/db');
 const path = require('path');
 const multer = require('multer');
-const { isLoggedIn } = require('../routes/login-registerSystem.js')
+const { isLoggedIn } = require('../routes/login-registerSystem.js');
 
 // setup diskStorage
 const storage = multer.diskStorage({
