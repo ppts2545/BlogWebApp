@@ -61,9 +61,12 @@ router.post('/post-Bigblog', isLoggedIn, upload.array('file_MediaBigBlog'), (req
         return res.status(400).json({ message: 'Missing content' });
     }
 
-    const saveMainContent = 'INSERT INTO blog_detail (blog_id, content) VALUES (?, ?)';
-    db.query(saveMainContent, [blogId, mainContent], (err) => {
-        if (err) return res.status(500).json({ message: 'Saving content failed' });
+    const updateContent = 'UPDATE blog SET content = ? WHERE blog_id = ?';
+    db.query(updateContent, [mainContent, blogId], (err) => {
+        if (err){
+            console.error('Error updating content:', err);
+            return res.status(500).json({ message: 'Updating content failed' });
+        } 
 
         if (files && files.length > 0) {
             const insertMedia = 'INSERT INTO media (blog_id, filename, filepath, is_thumbnail) VALUES ?';
