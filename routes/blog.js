@@ -95,6 +95,7 @@ router.get('/load-post', (req, res) => {
             b.title,
             b.short_explain,
             b.tags,
+            b.content,
             m.filepath AS thumbnail
         FROM blog b
         LEFT JOIN media m ON b.blog_id = m.blog_id AND m.is_thumbnail = true
@@ -109,6 +110,20 @@ router.get('/load-post', (req, res) => {
         res.json(results);
     });
 });
+router.get('/render-blogs/:blogId', (req,res) => {
+    const blogId = req.params.blogId
+
+    const query = 'SELECT * FROM blog WHERE blog_id = ?'
+
+    db.query(query, [blogId], (err, results) => {
+        if(err || results.length === 0){
+            return res.status(404).send('Blog not found');
+        }
+
+        const blog = results[0];
+        res.render('blog', { blog })
+    })
+})
 
 
 module.exports = router;
