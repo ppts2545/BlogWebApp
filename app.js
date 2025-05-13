@@ -2,10 +2,10 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const port = process.env.PORT || 3000;
-const userRoute = require('./routes/login-registerSystem').router;
 const session = require('express-session');
-const createBlog = require('./routes/create-post');
-const createBigBlog = require('./routes/create-Bigblog');
+
+const blogRoutes = require('./routes/blog');
+const userRoute = require('./routes/login-registerSystem').router;
 
 app.set('view engine', 'ejs');
 app.use(session({
@@ -13,16 +13,16 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
 }));
-
-app.use((req, res, next) => {
-    res.locals.user = req.session.user || null;
-    next();
-});
+app.use(express.static('public'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', userRoute);
-app.use('/', createBlog);
+app.use('/', blogRoutes);
 
+// Serve static files (uploaded images, CSS, JS)
+app.use('/uploads', express.static('uploads'));
+app.use('/css', express.static('public/css'));
+app.use('/js', express.static('public/js'));
 
 app.get('/open-blog', (req, res) => {
     res.render("blog")

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/bigBlog.css">
+</head>
+<body>
+    <div class="blog-container">
+        <!-- Form Input section -->
+        <form id="upload-BigBlogform" action="/post-Bigblog" method="post" class="form-container" enctype="multipart/form-data">
+            <h2>เนื้อหาหลัก</h2>
+
+            <!-- Hidden blogId -->
+            <input type="hidden" id="hiddenBlogId" name="blogId" value="<%= blogId %>"> <!-- EJS tag to inject the blogId -->
+
+            <!-- รูปภาพ -->
+            <div class="form-group">
+                <label>รูปภาพในบทความที่ใช้</label>
+                <input name="file_MediaBigBlog" type="file" accept="image/*">
+            </div>
+
+            <!-- เนื้อหา -->
+            <div class="form-group">
+                <label>เขียนบทความ</label>
+                <textarea name="mainContent" rows="10" placeholder="อธิบายบทความ..."></textarea>
+            </div>
+
+            <!-- ปุ่ม -->
+            <div class="form-buttons">
+                <button type="submit" class="next-btn">ถัดไป</button>
+            </div>
+        </form>
+
+        <!-- Blog content section -->
+        <img src="" alt="" class="blog-image">
+
+        <h1 class="blog-title"></h1> <!-- Updated typo from bolg-title to blog-title -->
+        <div class="blog-date"></div>
+        <div class="blog-content"></div>
+    </div>
+
+    <script>
+        // Wait until the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('upload-BigBlogform');
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();  // Prevent default form submission
+
+                // Create FormData object from the form
+                const formData = new FormData(form);
+
+                // Send the form data with fetch
+                fetch('/post-Bigblog', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.blogId) {
+                        // Populate the blog content once the blog is successfully posted
+                        document.querySelector('.blog-title').textContent = data.title;  // Assuming the title is in the response
+                        document.querySelector('.blog-date').textContent = data.date;    // Assuming the date is in the response
+                        document.querySelector('.blog-content').innerHTML = data.content;  // Assuming the content is in the response
+
+                        // Optionally, you can redirect after the content is shown
+                        // window.location.href = `/write-big-blog/${data.blogId}`;
+                    }
+                })
+                .catch(err => {
+                    console.error('❌ Error:', err);
+                });
+            });
+        });
+    </script>
+
+    <script src="/js/bigBlogSubmit.js"></script>
+</body>
+</html>
