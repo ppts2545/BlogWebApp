@@ -157,7 +157,7 @@ nav {
 }
 
 /* Create Button (Sticky Note Style) */
-#create-modal.create-sticky-note {
+#create-post-btn.create-sticky-note {
     position: fixed;
     bottom: 30px;
     right: 30px;
@@ -171,7 +171,7 @@ nav {
     transition: transform 0.2s ease-in-out;
 }
 
-#create-modal:hover {
+#create-post-btn:hover {
     transform: scale(1.05);
 }
 

@@ -15,6 +15,11 @@ const upload = multer({ storage });
 
 // POST /post-blog: Handle thumbnail blog creation
 router.post('/post-blog', isLoggedIn, upload.single('imageProfileBlog'), (req, res) => {
+    console.log('>>> Received POST /post-blog');
+    console.log('Body:', req.body);
+    console.log('File:', req.file);
+    console.log('Session:', req.session);
+    
     const { title, tag, short_explain } = req.body;
     const file = req.file;
     const authorId = req.session.user.author_id;
@@ -89,11 +94,14 @@ router.post('/post-Bigblog', isLoggedIn, upload.array('file_MediaBigBlog'), (req
 
 // GET /load-post: Send all blog data as JSON
 router.get('/load-post', (req, res) => {
+    const currentUserId = req.session.user?.author_id || null;
+
     const query = `
         SELECT 
             b.blog_id,
             b.title,
             b.short_explain,
+            author_id,
             b.tags,
             b.content,
             m.filepath AS thumbnail
@@ -107,7 +115,7 @@ router.get('/load-post', (req, res) => {
             console.error(err);
             return res.status(500).json({ message: 'Error loading blog data' });
         }
-        res.json(results);
+        res.json({ blogs: results, currentUserId });
     });
 });
 router.get('/render-blogs/:blogId', (req,res) => {
