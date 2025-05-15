@@ -102,6 +102,9 @@ router.get('/load-post', (req, res) => {
             b.title,
             b.short_explain,
             author_id,
+            created_at,
+            updated_at,
+            author_id,
             b.tags,
             b.content,
             m.filepath AS thumbnail
@@ -121,15 +124,32 @@ router.get('/load-post', (req, res) => {
 router.get('/render-blogs/:blogId', (req,res) => {
     const blogId = req.params.blogId
 
-    const query = 'SELECT * FROM blog WHERE blog_id = ?'
+    const blogquery = 'SELECT * FROM blog WHERE blog_id = ?'
+    const mediaQuery = 'SELECT filepath, media_type FROM media WHERE blog_id = ?';
 
-    db.query(query, [blogId], (err, results) => {
+    db.query(blogquery, [blogId], (err, results) => {
         if(err || results.length === 0){
             return res.status(404).send('Blog not found');
         }
 
         const blog = results[0];
-        res.render('blog', { blog })
+
+        db.query(mediaQuery, [blogId], (err, mediaResults) => {
+            if (err) {
+                return res.status(500).send('Error fetching media');
+            }
+
+            // Split media by type
+            blog.images = mediaResults
+                .filter(m => m.media_type === 'image')
+                .map(m => '/' + m.filepath);
+
+            blog.videos = mediaResults
+                .filter(m => m.media_type === 'video')
+                .map(m => '/' + m.filepath);
+
+            res.render('blog', { blog });
+        });
     })
 })
 

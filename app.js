@@ -15,6 +15,7 @@ app.use(session({
 }));
 app.use(express.static('public'));
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', userRoute);
 app.use('/', blogRoutes);

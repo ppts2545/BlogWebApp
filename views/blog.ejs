@@ -16,10 +16,29 @@
 </head>
 <body>
     <h1>Blog Posts</h1>
-    <div id="blog-list">
-        <!-- Blog cards will be injected here -->
+    <div id="BigBlog-list">
+        <h1><%= blog.title %></h1>
+
+        <h2>Images</h2>
+        <% blog.images.forEach(img => { %>
+        <img src="<%= img %>" alt="Blog image" width="300" height="300"><br>
+        <% }) %>
+
+        <h2>Videos</h2>
+        <% blog.videos.forEach(vid => { %>
+        <video width="320" height="240" controls>
+            <source src="<%= vid %>" type="video/mp4">
+            Your browser does not support the video tag.
+        </video><br>
+        <% }) %>
+
+        <div class="blog-card">
+            <p><strong>Tags:</strong> <%= blog.tags %></p>
+            <p><%= blog.created_at %></p>
+            <p><%= blog.updated_at %></p>
+            <p><%= blog.content %></p>
+        </div>
     </div>
 
-    <script src="/js/loadPost.js" defer></script>
 </body>
 </html>
