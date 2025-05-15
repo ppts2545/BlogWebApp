@@ -7,36 +7,26 @@
 }
 
 body {
-    background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+    background: linear-gradient(135deg, #e0f7fa, #e3f2fd);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.login-container {
+.register-container {
     background: white;
     padding: 2.5rem;
     border-radius: 16px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
 }
 
-.login-container h2 {
+.register-container h2 {
     margin-bottom: 1.5rem;
     text-align: center;
     color: #333;
-}
-
-.alert {
-    background-color: #ffe0b2;
-    border: 1px solid #ffa726;
-    padding: 0.8rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    color: #e65100;
-    text-align: center;
 }
 
 form input {
@@ -50,14 +40,14 @@ form input {
 
 form input:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: #26a69a;
     background-color: #f9f9f9;
 }
 
 button[type="submit"] {
     width: 100%;
     padding: 0.9rem;
-    background: #007bff;
+    background: #26a69a;
     color: white;
     font-weight: bold;
     border: none;
@@ -67,19 +57,26 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background: #0056b3;
+    background: #1e857f;
 }
 
-.login-link {
+.register-link {
     text-align: center;
     margin-top: 1.5rem;
 }
 
-.login-link a {
+.register-link a {
     color: #007bff;
     text-decoration: none;
 }
 
-.login-link a:hover {
+.register-link a:hover {
     text-decoration: underline;
+}
+
+/* Message styling */
+p {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    text-align: center;
 }

@@ -12,13 +12,13 @@
         <div class="container">
             <div class="nav-con">
                 <div class="logo">
-                    <a href="">Navbar</a>
+                    <a href="">PTBLOG</a>
                 </div>
                 <ul class="menu">
-                    <li><a href="">menu#1</a></li>
-                    <li><a href="">menu#1</a></li>
-                    <li><a href="">menu#1</a></li>
-                    <li><a href="">menu#1</a></li>
+                    <li><a href="">Home</a></li>
+                    <li><a href="">Category</a></li>
+                    <li><a href="">About</a></li>
+                    <li><a href="">Create</a></li>
                     <li>
                         <input type="text" class="nav-search-box" />
                         <a href="">🔍</a>
@@ -36,60 +36,63 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="box">
-            <% if (user) { %>
-            <!-- Blog Form -->
-            <form id="upload-form" action="/post-blog" method="post" class="form-container hidden" enctype="multipart/form-data">
-                <h2>สร้างบล็อกใหม่</h2>
-                <div class="form-group">
-                    <label>รูปภาพหน้าปก</label>
-                    <input name="imageProfileBlog" type="file" accept="image/*" required>
-                </div>
-                <div class="form-group">
-                    <label>หัวข้อบล็อก</label>
-                    <input name="title" type="text" placeholder="กรอกชื่อหัวข้อ" required>
-                </div>
-                <div class="form-group">
-                    <label>แท็ก (คั่นด้วย , )</label>
-                    <input name="tag" type="text" placeholder="เช่น backend, nodejs, tutorial" required>
-                </div>
-                <div class="form-group">
-                    <label>อธิบายคล่าวคล่าว</label>
-                    <textarea name="short_explain" rows="10" placeholder="อธิบายบทความ..." required></textarea>
-                </div>
-                <div class="form-buttons">
-                    <button type="submit" class="next-btn">ถัดไป</button>
-                </div>
-            </form>
-            <% } %>
+    <div class="content-container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="box">
+                <% if (user) { %>
+                <!-- Blog Form -->
+                <form id="upload-form" action="/post-blog" method="post" class="form-container hidden" enctype="multipart/form-data">
+                    <h2>สร้างบล็อกใหม่</h2>
+                    <div class="form-group">
+                        <label>รูปภาพหน้าปก</label>
+                        <input name="imageProfileBlog" type="file" accept="image/*" required>
+                    </div>
+                    <div class="form-group">
+                        <label>หัวข้อบล็อก</label>
+                        <input name="title" type="text" placeholder="กรอกชื่อหัวข้อ" required>
+                    </div>
+                    <div class="form-group">
+                        <label>แท็ก (คั่นด้วย , )</label>
+                        <input name="tag" type="text" placeholder="เช่น backend, nodejs, tutorial" required>
+                    </div>
+                    <div class="form-group">
+                        <label>อธิบายคล่าวคล่าว</label>
+                        <textarea name="short_explain" rows="10" placeholder="อธิบายบทความ..." required></textarea>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="next-btn">ถัดไป</button>
+                    </div>
+                </form>
+                <% } %>
 
-            <!-- Blog List -->
-            <div id="blog-list">
-                
+                <!-- Blog List -->
+                <div id="blog-list">
+                    
+                </div>
+
+                <!-- Image Modal -->
+                <div id="image-modal">
+                    <img id="modal-img" src="" >
+                </div>
+
+                <!-- Floating Button -->
+                <div id="create-post-btn" class="create-sticky-note">
+                    Create Blog
+                </div>
             </div>
+        </section>
 
-            <!-- Image Modal -->
-            <div id="image-modal">
-                <img id="modal-img" src="" >
+        <!-- Content Section -->
+        <section class="content">
+            <div class="box">
+                <p>นี่คือเนื้อหาด้านล่างที่คุณต้องเลื่อนลงมาถึงจะเห็น</p>
+                <p>สามารถเพิ่มเนื้อหาอื่น ๆ ต่อได้ที่นี่...</p>
             </div>
+        </section>
 
-            <!-- Floating Button -->
-            <div id="create-post-btn" class="create-sticky-note">
-                Create Blog
-            </div>
-        </div>
-    </section>
-
-    <!-- Content Section -->
-    <section class="content">
-        <div class="box">
-            <p>นี่คือเนื้อหาด้านล่างที่คุณต้องเลื่อนลงมาถึงจะเห็น</p>
-            <p>สามารถเพิ่มเนื้อหาอื่น ๆ ต่อได้ที่นี่...</p>
-        </div>
-    </section>
-
+    </div>
+    
     <!-- Scripts -->
     <script src="/js/loadPost.js" defer></script>
     <script src="/js/toggleForm.js" defer></script>
