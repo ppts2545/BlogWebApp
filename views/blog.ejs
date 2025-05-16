@@ -200,7 +200,7 @@
                 <% } %>
 
                 <% if(blog.content && blog.content.trim() !== '') { %>
-                    <form action="/edit-blog/<%= blog.blogId %>" method="get" style="display:inline;">
+                    <form action="/edit-blog/<%= blog.blog_id %>" method="get" style="display:inline;">
                         <button type="submit" class="btn edit-btn">✏️ Edit</button>
                     </form>
                 <% } %>

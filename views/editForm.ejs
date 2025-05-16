@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>แก้ไขบทความ</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f4f7fa;
+      color: #333;
+    }
+
+    .form-container {
+      max-width: 800px;
+      margin: 60px auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      margin-bottom: 30px;
+      color: #2c3e50;
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    textarea,
+    input[type="file"] {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    input[type="text"]:focus,
+    input[type="url"]:focus,
+    textarea:focus,
+    input[type="file"]:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .media-preview {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .media-preview img {
+      max-width: 100%;
+      height: auto;
+      max-height: 300px;
+      border-radius: 10px;
+      object-fit: contain;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    .media-preview video {
+      max-width: 100%;
+      height: auto;
+      max-height: 300px;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    iframe {
+      width: 300px;
+      height: 170px;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-buttons {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .submit-btn {
+      padding: 14px 28px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .submit-btn:hover {
+      background: #2980b9;
+    }
+
+    @media (max-width: 600px) {
+      .form-container {
+        padding: 25px;
+      }
+
+      .submit-btn {
+        width: 100%;
+      }
+
+      iframe {
+        width: 100%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <form action="/update-blog/<%= blog.blog_id %>" method="POST" enctype="multipart/form-data" class="form-container">
+    <h2>แก้ไขบทความ</h2>
+
+    <div class="form-group">
+      <label>หัวข้อบล็อก</label>
+      <input type="text" name="title" value="<%= blog.title %>" required>
+    </div>
+
+    <div class="form-group">
+      <label>แท็ก (คั่นด้วย , )</label>
+      <input type="text" name="tag" value="<%= blog.tag %>" required>
+    </div>
+
+    <div class="form-group">
+      <label>คำอธิบายสั้น ๆ</label>
+      <textarea name="short_explain" rows="4" required><%= blog.short_explain %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>เนื้อหาหลัก</label>
+      <textarea name="mainContent" rows="8" required><%= blog.content %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>อัปโหลดรูปภาพใหม่</label>
+      <input type="file" name="file_MediaBigBlog" multiple accept="image/*">
+    </div>
+
+    <div class="form-group">
+      <label>อัปโหลดวิดีโอใหม่</label>
+      <input type="file" name="videoFile" multiple accept="video/*">
+    </div>
+
+    <div class="form-group">
+      <label>ลิงก์ YouTube (สามารถใส่หลายลิงก์โดยใช้คอมม่าหรือขึ้นบรรทัดใหม่)</label>
+      <textarea name="youtubeLink" rows="3" placeholder="https://youtube.com/..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>มีเดียเดิม</label>
+      <div class="media-preview">
+        <% media.forEach(m => { %>
+          <% if (m.media_type === 'image') { %>
+            <img src="/<%= m.filepath %>" alt="image">
+          <% } else if (m.media_type === 'video') { %>
+            <video controls>
+              <source src="/<%= m.filepath %>">
+              เบราว์เซอร์ของคุณไม่รองรับวิดีโอ
+            </video>
+          <% } else if (m.media_type === 'youtube') { %>
+            <iframe src="<%= m.filepath.replace('watch?v=', 'embed/') %>" frameborder="0" allowfullscreen></iframe>
+          <% } %>
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="form-buttons">
+      <button type="submit" class="submit-btn">อัปเดตบทความ</button>
+    </div>
+  </form>
+
+</body>
+</html>

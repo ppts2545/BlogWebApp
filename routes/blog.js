@@ -247,4 +247,116 @@ router.post('/delete-blog/:blogId', (req, res) => {
     });
 });
 
+//EditForm Route
+router.get('/edit-blog/:blogId', (req, res) => {
+    const blogId = req.params.blogId;
+
+    const blogQuery = 'SELECT * FROM blog WHERE blog_id = ?';
+    const mediaQuery = 'SELECT filepath, media_type FROM media WHERE blog_id = ?';
+
+    db.query(blogQuery, [blogId], (err, blogResults) => {
+        if (err || blogResults.length === 0) {
+            return res.status(404).send('ไม่พบบทความ');
+        }
+
+        const blog = blogResults[0];
+
+        db.query(mediaQuery, [blogId], (err, mediaResults) => {
+            if (err) return res.status(500).send('ดึงข้อมูลสื่อไม่สำเร็จ');
+
+            res.render('editForm', {
+                blog,
+                media: mediaResults // ส่ง media ไปด้วย ถ้าจะแสดงในฟอร์ม
+            });
+        });
+    });
+});
+
+//Update data Route
+router.post('/update-blog/:blogId', upload.fields([
+  { name: 'file_MediaBigBlog' },
+  { name: 'videoFile' }
+]), (req, res) => {
+  const blogId = req.params.blogId;
+  const { title, tag, short_explain, mainContent, youtubeLink } = req.body;
+
+  // 1. อัปเดต blog
+  const updateQuery = `
+    UPDATE blog 
+    SET title = ?, tags = ?, short_explain = ?, content = ?
+    WHERE blog_id = ?
+  `;
+  db.query(updateQuery, [title, tag, short_explain, mainContent, blogId], (err) => {
+    if (err){
+        console.error('❌ Update Blog Error:', err);
+        return res.status(500).send('❌ อัปเดตบทความไม่สำเร็จ');
+    } 
+
+    // 2. ลบ media เก่า
+    const deleteMediaSQL = 'DELETE FROM media WHERE blog_id = ?';
+    db.query(deleteMediaSQL, [blogId], (err) => {
+      if (err) return res.status(500).send('❌ ลบ media เดิมไม่สำเร็จ');
+
+      // 3. เตรียม media ใหม่
+      const insertMediaSQL = `
+        INSERT INTO media (blog_id, filename, filepath, caption, media_type)
+        VALUES ?
+      `;
+      const mediaValues = [];
+
+      // 3.1 รูปภาพ
+      if (req.files['file_MediaBigBlog']) {
+        req.files['file_MediaBigBlog'].forEach(file => {
+          mediaValues.push([
+            blogId,
+            file.originalname,
+            'uploads/' + file.filename,
+            null,
+            'image'
+          ]);
+        });
+      }
+
+      // 3.2 วิดีโอ
+      if (req.files['videoFile']) {
+        req.files['videoFile'].forEach(file => {
+          mediaValues.push([
+            blogId,
+            file.originalname,
+            'uploads/' + file.filename,
+            null,
+            'video'
+          ]);
+        });
+      }
+
+      // 3.3 YouTube Link
+      if (youtubeLink) {
+        const links = youtubeLink.split(/[\n,]/).map(link => link.trim()).filter(link => link !== '');
+        links.forEach(link => {
+          mediaValues.push([
+            blogId,
+            null,
+            link,
+            null,
+            'youtube'
+          ]);
+        });
+      }
+
+      // 4. บันทึก media ถ้ามี
+      if (mediaValues.length > 0) {
+        db.query(insertMediaSQL, [mediaValues], (err) => {
+          if (err) return res.status(500).send('❌ เพิ่ม media ใหม่ล้มเหลว');
+          return res.redirect(`/render-blogs/${blogId}`);
+        });
+      } else {
+        return res.redirect(`/render-blogs/${blogId}`);
+      }
+    });
+  });
+});
+
+
+
 module.exports = router;
