@@ -194,7 +194,7 @@
         <% if (currentUserId && String(currentUserId) === String(blog.author_id)) { %>
             <div class="action-buttons">
                 <% if (blog.blog_id) { %>
-                    <form action="/delete-blog/<%= blog.blogId %>" method="post" style="display: inline;">
+                    <form action="/delete-blog/<%= blog.blog_id %>" method="post" style="display: inline;">
                         <button type="submit" class="btn delete-btn">🗑️ Delete</button>
                     </form>
                 <% } %>

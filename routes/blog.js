@@ -198,4 +198,48 @@ router.get('/render-blogs/:blogId', (req,res) => {
     })
 })
 
+//Delete Blog
+router.post('/delete-blog/:blogId', (req, res) => {
+    const blogId = req.params.blogId;
+    // ตรวจสอบว่าผู้ใช้ login และเป็นเจ้าของ blog หรือไม่
+    const currentUserId = req.session.user?.author_id;
+
+    if (!currentUserId) {
+        return res.status(401).send('Unauthorized');
+    }
+
+    const getBlogQuery = 'SELECT author_id FROM blog WHERE blog_id = ?';
+    db.query(getBlogQuery, [blogId], (err, results) => {
+        if(err) return res.status(500).send('Database error');
+
+        if(results.length === 0) {
+            return res.status(404).send('Blog not found');
+        }
+
+        const blog = results[0];
+        if(blog.author_id !== currentUserId) {
+            return res.status(403).send('You are not allowed to delete this blog');
+        }
+
+        // ลบ blog ถ้าเป็นเจ้าของจริง
+        const deleteMediaQuery = 'DELETE FROM media WHERE blog_id = ?';
+        db.query(deleteMediaQuery, [blogId], (err, result) => {
+            if (err){
+                console.error('Delete error: ', err)
+                return res.status(500).send('Error deleting blog');
+            } 
+
+            const deleteBlogQuery = 'DELETE FROM blog WHERE blog_id = ?'
+            db.query(deleteBlogQuery, [blogId], (err) => {
+                if(err) {
+                    console.error('Error deleting blog: ', err);
+                    return res.status(500).send('Error deleting blog');
+                }
+                
+                return res.redirect('/');
+            });
+        });
+    });
+});
+
 module.exports = router;
