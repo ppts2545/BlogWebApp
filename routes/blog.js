@@ -192,7 +192,7 @@ router.get('/render-blogs/:blogId', (req,res) => {
 
             res.render('blog', { 
                 blog,
-                currentUserId: req.session.user.author_id
+                currentUserId: req.session.user?.author_id ?? null
              });
         });
     })

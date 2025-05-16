@@ -64,28 +64,28 @@ router.post('/login', (req, res) => {
     db.query(sql, [email], (err, result) => {
         if (err){
             console.error(err);
-            return res.status(500).send('Database error')
+            return res.status(500).render('login', { error_msg: 'Database error. Please try again later.' });
         } 
 
-        if(result.length > 0) {
-           const user = result[0];
+        if (Array.isArray(result) && result.length > 0) {
+            const user = result[0];
 
-           // ✅ ตรวจสอบรหัสผ่านแบบเข้ารหัส
-           if (bcrypt.compareSync(password, user.password)){
+            if (user.password && bcrypt.compareSync(password, user.password)) {
                 req.session.user = {
-                    author_id: user.author_id,
-                    name: user.name,
-                    email: user.email
-                }
-                res.redirect('/')
-           } else {
-            res.render('login', { error_msg: 'Incorrect password!'});
-           }
+                    author_id: user.id ?? 0,  // Use the right field name here
+                    name: user.name ?? 'Guest',
+                    email: user.email ?? 'no-email@example.com'
+                };
+                return res.redirect('/');
+            } else {
+                return res.render('login', { error_msg: 'Incorrect password!' });
+            }
         } else {
-            res.render('login', { error_msg: 'User not found!'})
+            return res.render('login', { error_msg: 'User not found!' });
         }
     })
-})
+});
+
 
 module.exports = {
     router,
