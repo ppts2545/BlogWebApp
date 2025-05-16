@@ -72,9 +72,9 @@ router.post('/login', (req, res) => {
 
             if (user.password && bcrypt.compareSync(password, user.password)) {
                 req.session.user = {
-                    author_id: user.id ?? 0,  // Use the right field name here
-                    name: user.name ?? 'Guest',
-                    email: user.email ?? 'no-email@example.com'
+                    author_id: user.author_id,  // Use the right field name here
+                    name: user.name,
+                    email: user.email
                 };
                 return res.redirect('/');
             } else {
