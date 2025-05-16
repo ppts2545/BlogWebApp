@@ -25,10 +25,6 @@ app.use('/uploads', express.static('uploads'));
 app.use('/css', express.static('public/css'));
 app.use('/js', express.static('public/js'));
 
-app.get('/open-blog', (req, res) => {
-    res.render("blog")
-})
-
 app.get('/', (req, res) => {
     res.render("index", { user: req.session.user });
 });

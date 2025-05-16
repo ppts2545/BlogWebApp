@@ -58,8 +58,11 @@ router.get('/write-big-blog/:blogId', isLoggedIn, (req, res) => {
 });
 
 // POST /post-Bigblog: handle big blog content submission
-router.post('/post-Bigblog', isLoggedIn, upload.array('file_MediaBigBlog'), (req, res) => {
-    const { blogId, mainContent } = req.body;
+router.post('/post-Bigblog', isLoggedIn, upload.fields([
+    { name: 'file_MediaBigBlog', maxCount: 5 },
+    { name: 'videoFile', maxCount: 2 }
+]), (req, res) => {
+    const { blogId, mainContent, youtubeLink } = req.body;
     const files = req.files;
 
     if (!blogId || !mainContent) {
@@ -68,29 +71,68 @@ router.post('/post-Bigblog', isLoggedIn, upload.array('file_MediaBigBlog'), (req
 
     const updateContent = 'UPDATE blog SET content = ? WHERE blog_id = ?';
     db.query(updateContent, [mainContent, blogId], (err) => {
-        if (err){
-            console.error('Error updating content:', err);
+        if (err) {
+            console.error('❌ Error updating content:', err);
             return res.status(500).json({ message: 'Updating content failed' });
-        } 
+        }
 
-        if (files && files.length > 0) {
-            const insertMedia = 'INSERT INTO media (blog_id, filename, filepath, is_thumbnail) VALUES ?';
-            const mediaValues = files.map(file => [
+        const mediaInserts = [];
+
+        // Images
+        if (files && files.file_MediaBigBlog) {
+            files.file_MediaBigBlog.forEach(file => {
+                const mediaType = mediaTypeUtils.identifyMediaType(file.originalname);
+                mediaInserts.push([
+                    blogId,
+                    file.filename,
+                    'images/' + file.filename,
+                    false,
+                    mediaType
+                ]);
+            });
+        }
+
+        // Videos
+        if (files && files.videoFile) {
+            files.videoFile.forEach(file => {
+                const mediaType = mediaTypeUtils.identifyMediaType(file.originalname);
+                mediaInserts.push([
+                    blogId,
+                    file.filename,
+                    'videos/' + file.filename,
+                    false,
+                    mediaType
+                ]);
+            });
+        }
+
+        // YouTube link
+        if (youtubeLink && youtubeLink.startsWith('http')) {
+            mediaInserts.push([
                 blogId,
-                file.filename,
-                'images/' + file.filename,
-                false
+                null,
+                youtubeLink,
+                false,
+                'youtube'
             ]);
+        }
 
-            db.query(insertMedia, [mediaValues], (err) => {
-                if (err) return res.status(500).json({ message: 'Saving media failed' });
-                res.status(200).json({ message: 'Big blog saved' });
+        if (mediaInserts.length > 0) {
+            const insertMedia = 'INSERT INTO media (blog_id, filename, filepath, is_thumbnail, media_type) VALUES ?';
+            db.query(insertMedia, [mediaInserts], (err) => {
+                if (err) {
+                    console.error('❌ Error inserting media:', err);
+                    return res.status(500).json({ message: 'Saving media failed' });
+                }
+                res.status(200).json({ message: 'Big blog updated successfully', blogId });
             });
         } else {
-            res.status(200).json({ message: 'Big blog saved without media' });
+            // No media, just respond success
+            res.status(200).json({ message: 'Big blog updated successfully', blogId });
         }
     });
 });
+
 
 // GET /load-post: Send all blog data as JSON
 router.get('/load-post', (req, res) => {
@@ -148,10 +190,12 @@ router.get('/render-blogs/:blogId', (req,res) => {
                 .filter(m => m.media_type === 'video')
                 .map(m => '/' + m.filepath);
 
-            res.render('blog', { blog });
+            res.render('blog', { 
+                blog,
+                currentUserId: req.session.user.author_id
+             });
         });
     })
 })
-
 
 module.exports = router;

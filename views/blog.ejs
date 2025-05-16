@@ -3,19 +3,154 @@
 <head>
     <title>All Blogs</title>
     <style>
-        .blog-card {
-            border: 1px solid #ddd;
-            padding: 1em;
-            margin-bottom: 1em;
+                /* Reset and base */
+        * {
+        box-sizing: border-box;
         }
-        .thumb {
+
+        body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 2rem;
+        background: #f9f9f9;
+        color: #333;
+        line-height: 1.6;
+        }
+
+        /* Main heading */
+        h1 {
+        text-align: center;
+        margin-bottom: 2rem;
+        font-weight: 700;
+        color: #222;
+        letter-spacing: 1px;
+        }
+
+        /* Container for blog */
+        #BigBlog-list {
+        max-width: 900px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+        }
+
+        /* Blog title */
+        #BigBlog-list > h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid black;
+        padding-bottom: 0.5rem;
+        color: black;
+        }
+
+        /* Section headings */
+        h2 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        color: #444;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 0.3rem;
+        }
+
+        /* Images */
+        #BigBlog-list img {
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+        }
+
+        #BigBlog-list img:hover {
+        transform: scale(1.05);
+        }
+
+        /* Videos */
+        iframe, video {
+        border-radius: 10px;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        margin-bottom: 1.5rem;
+        width: 100%;
+        max-width: 640px;
+        height: 360px;
+        }
+
+        /* Blog card content */
+        .blog-card {
+        background: #fefefe;
+        border-radius: 12px;
+        padding: 1.5rem 2rem;
+        margin-top: 2rem;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+        color: #555;
+        font-size: 1.1rem;
+        }
+
+        .blog-card p {
+        margin: 0.8rem 0;
+        }
+
+        .blog-card strong {
+        color: #007BFF;
+        }
+
+        /* Action buttons container */
+        .action-buttons {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        }
+
+        /* Buttons */
+        .btn {
+        padding: 0.5rem 1.2rem;
+        border: none;
+        border-radius: 30px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        user-select: none;
+        }
+
+        /* Delete button */
+        .delete-btn {
+        background-color: #e74c3c;
+        color: white;
+        }
+
+        .delete-btn:hover {
+        background-color: #c0392b;
+        }
+
+        /* Edit button */
+        .edit-btn {
+        background-color: #3498db;
+        color: white;
+        }
+
+        .edit-btn:hover {
+        background-color: #2980b9;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 700px) {
+        #BigBlog-list {
+            padding: 1rem;
+        }
+
+        iframe, video {
             max-width: 100%;
             height: auto;
         }
+    }
     </style>
 </head>
 <body>
-    <h1>Blog Posts</h1>
     <div id="BigBlog-list">
         <h1><%= blog.title %></h1>
 
@@ -26,10 +161,27 @@
 
         <h2>Videos</h2>
         <% blog.videos.forEach(vid => { %>
-        <video width="320" height="240" controls>
-            <source src="<%= vid %>" type="video/mp4">
-            Your browser does not support the video tag.
-        </video><br>
+            <% if (vid.includes('youtube.com') || vid.includes('youtu.be')) { %>
+                <%  
+                    let youtubeId;
+                    if (vid.includes('watch?v=')){
+                        youtubeId = vid.split('watch?v=')[1].split('&')[0];
+                    } else if (vid.includes('youtu.be/')){
+                        youtubeId = vid.split('youtu.be/')[1].split('?')[0];
+                    }
+                %>
+                <!-- Embed YouTube video -->
+                <iframe width="320" height="240" 
+                        src="https://www.youtube.com/embed/<%= youtubeId %>" 
+                        frameborder="0" allowfullscreen>
+                </iframe><br>
+            <% } else { %>
+                <!-- Local video -->
+                <video width="320" height="240" controls>
+                    <source src="/<%= vid %>" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video><br>
+            <% } %>
         <% }) %>
 
         <div class="blog-card">
@@ -38,6 +190,22 @@
             <p><%= blog.updated_at %></p>
             <p><%= blog.content %></p>
         </div>
+
+        <% if (currentUserId === blog.author_id) { %>
+            <div class="action-buttons">
+                <% if (blog.blog_id) { %>
+                    <form action="/delete-blog/<%= blog.blogId %>" method="post" style="display: inline;">
+                        <button type="submit" class="btn delete-btn">🗑️ Delete</button>
+                    </form>
+                <% } %>
+
+                <% if(blog.content && blog.content.trim() !== '') { %>
+                    <form action="/edit-blog/<%= blog.blogId %>" method="get" style="display:inline;">
+                        <button type="submit" class="btn edit-btn">✏️ Edit</button>
+                    </form>
+                <% } %>
+            </div>
+        <% } %>
     </div>
 
 </body>

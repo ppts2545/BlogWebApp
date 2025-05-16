@@ -62,12 +62,21 @@ router.post('/login', (req, res) => {
 
     const sql = 'SELECT * FROM users WHERE email = ?';
     db.query(sql, [email], (err, result) => {
-        if (err) throw err;
+        if (err){
+            console.error(err);
+            return res.status(500).send('Database error')
+        } 
 
         if(result.length > 0) {
            const user = result[0];
+
+           // ✅ ตรวจสอบรหัสผ่านแบบเข้ารหัส
            if (bcrypt.compareSync(password, user.password)){
-                req.session.user = user;
+                req.session.user = {
+                    author_id: user.author_id,
+                    name: user.name,
+                    email: user.email
+                }
                 res.redirect('/')
            } else {
             res.render('login', { error_msg: 'Incorrect password!'});
