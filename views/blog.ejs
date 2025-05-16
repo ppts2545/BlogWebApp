@@ -163,7 +163,7 @@
         <% blog.videos.forEach(vid => { %>
             <% if (vid.includes('youtube.com') || vid.includes('youtu.be')) { %>
                 <%  
-                    let youtubeId;
+                    var youtubeId;
                     if (vid.includes('watch?v=')){
                         youtubeId = vid.split('watch?v=')[1].split('&')[0];
                     } else if (vid.includes('youtu.be/')){

@@ -163,14 +163,15 @@ router.get('/load-post', (req, res) => {
         res.json({ blogs: results, currentUserId });
     });
 });
-router.get('/render-blogs/:blogId', (req,res) => {
-    const blogId = req.params.blogId
 
-    const blogquery = 'SELECT * FROM blog WHERE blog_id = ?'
+router.get('/render-blogs/:blogId', (req, res) => {
+    const blogId = req.params.blogId;
+
+    const blogQuery = 'SELECT * FROM blog WHERE blog_id = ?';
     const mediaQuery = 'SELECT filepath, media_type FROM media WHERE blog_id = ?';
 
-    db.query(blogquery, [blogId], (err, results) => {
-        if(err || results.length === 0){
+    db.query(blogQuery, [blogId], (err, results) => {
+        if (err || results.length === 0) {
             return res.status(404).send('Blog not found');
         }
 
@@ -187,16 +188,20 @@ router.get('/render-blogs/:blogId', (req,res) => {
                 .map(m => '/' + m.filepath);
 
             blog.videos = mediaResults
-                .filter(m => m.media_type === 'video')
-                .map(m => '/' + m.filepath);
+                .filter(m => m.media_type === 'video' || m.media_type === 'youtube')
+                .map(m => {
+                    if (m.filepath.startsWith('http')) return m.filepath;
+                    return '/' + m.filepath;
+                });
 
             res.render('blog', { 
                 blog,
                 currentUserId: req.session.user?.author_id ?? null
-             });
+            });
         });
-    })
-})
+    });
+});
+
 
 //Delete Blog
 router.post('/delete-blog/:blogId', (req, res) => {
